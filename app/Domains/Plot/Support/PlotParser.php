@@ -14,8 +14,9 @@ class PlotParser
      *
      * @param array $plotNumbers Plot numbers.
      *
-     * @throws ValidationException if one of the Plot numbers is not in the
-     *                             correct format.
+     * @throws ValidationException if at least one of the Plot numbers is not
+     *                             in the correct format.
+     * @throws Symfony\Component\HttpKernel\Exception\HttpException if API error.
      *
      * @return Illuminate\Support\Collection Collection of Plots.
      */
@@ -71,19 +72,23 @@ class PlotParser
      *
      * @param iterable $plotNumbers Plot numbers.
      *
-     * @throws Illuminate\Http\Client\RequestException if API response with
-     *                                                 status code 400 on given
-     *                                                 Plot numbers.
+     * @throws Symfony\Component\HttpKernel\Exception\HttpException if API error.
      *
      * @return array Plot data.
      */
     public static function getPlotsFromBiglandApi($plotNumbers) {
         $query = json_encode(['collection' => ['plots' => $plotNumbers]]);
 
-        return Http::acceptJson()
+        $response = Http::acceptJson()
             ->withBody($query, 'application/json')
-            ->get('http://api.pkk.bigland.ru/test/plots')
-            ->throw()
-            ->json();
+            ->get('http://api.pkk.bigland.ru/test/plots');
+
+        if ($response->successful()) {
+            return $response->json();
+        } elseif ($response->clientError()) {
+            abort(400);
+        } elseif ($response->serverError()) {
+            abort(500);
+        }
     }
 }

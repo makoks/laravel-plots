@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Domains\Plot\Http\Controllers\PlotsController;
+use App\Domains\Plot\Http\Controllers\PlotsWebController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +14,7 @@ use App\Domains\Plot\Http\Controllers\PlotsController;
 |
 */
 
-Route::get('/plots', [PlotsController::class, 'index']);
+Route::get('/plots', [PlotsWebController::class, 'index']);
 
 Route::get('/', function () {
     return view('home');

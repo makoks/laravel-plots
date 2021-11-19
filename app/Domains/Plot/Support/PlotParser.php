@@ -23,7 +23,8 @@ class PlotParser
     public static function parsePlots($plotNumbers) {
         $validated = self::validatePlots($plotNumbers);
 
-        $upToDate = Plot::whereIn('number', $validated)
+        $upToDate = Plot::select('number', 'address', 'price', 'area')
+            ->whereIn('number', $validated)
             ->where('updated_at', '>', now()->subHour())
             ->get();
 

@@ -30,7 +30,7 @@ class Plot extends Model
                     'area' => Arr::get($plot, 'attrs.plot_area'),
                 ]
             );
-            $result[] = $savedPlot;
+            $result[] = $savedPlot->only('number', 'address', 'price', 'area');
             $savedPlot->touch();
         }
 
